@@ -28,6 +28,17 @@ These configurations can be used with Codespaces and locally.
 - **Using with Codespaces**: `Code > Codespaces > Click on ...> New with options > Choose "dev" as devcontainer configuration`. This image may require a Codespace with at least 64GB of disk space.
 - **Before using**: We highly encourage all potential contributors to read the [AutoGen Contributing](https://ag2ai.github.io/ag2/docs/Contribute) page prior to submitting any pull requests.
 
+### distributed with GPU support
+
+- **Purpose**: Tailored for AutoGen project developers working on a `distributed system` architecture with GPU support, this Dockerfile, i.e., `./distributed/Dockerfile` includes tools and configurations aiding in development and contribution.
+- **Usage**: Recommended for developers who are contributing to the AutoGen project `distributed` architecture.
+- **STOP: Read before using**: Be sure to modify the docker.sock based on your local system settings. The settings assumed here are from a `Fedora` workstation using `rootless docker` with current `nvidia` drivers installed and `SELinux` enforcement.
+[HowTo Setup Docker Rootless Nvidia Container|https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html#rootless-mode]
+- **VSCode Setup**: Set `Dev › Containers: Docker Socket Path` to your correct path e.g. `/run/user/1000/docker.sock`
+- **Openning from VSCode**: Run `Reopen in Container` then select `Distributed System`
+- **Using with Codespaces**: `Code > Codespaces > Click on ...> New with options > Choose "dev" as devcontainer configuration`. This image may require a Codespace with at least 64GB of disk space.
+- **Before using**: We highly encourage all potential contributors to read the [AutoGen Contributing](https://ag2ai.github.io/ag2/docs/Contribute) page prior to submitting any pull requests.
+
 
 ## Customizing Dockerfiles
 

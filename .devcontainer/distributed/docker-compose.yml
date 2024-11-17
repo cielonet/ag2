@@ -1,0 +1,75 @@
+services:
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: minio
+    hostname: minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ~/minio/data:/data
+    command: server /data --console-address ":9001"
+
+#  redis:
+#    image: redis:latest
+#    container_name: redis
+#    hostname: redis
+#    healthcheck:
+#      test: ["CMD", "redis-cli", "ping"]
+#      interval: 10s
+#      timeout: 30s
+#      retries: 50
+#      start_period: 30s
+#    restart: always
+#    environment:
+#      - REDIS_PROTECTED_MODE=no  # Set protected mode to no
+
+  devcontainer:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: devcontainer
+    hostname: devcontainer
+    environment:
+      - DOCKER_HOST=unix:///var/run/docker.sock
+      - AWS_ENDPOINT_ADDR=minio
+      - AWS_ENDPOINT_PORT=9000
+      - METRICS_PORT=8080
+      - AWS_S3_BUCKET=rldata
+      - AWS_ENDPOINT_URL=http://minio:9000
+      - AWS_ACCESS_KEY_ID=minioadmin
+      - AWS_SECRET_ACCESS_KEY=minioadmin
+    volumes:
+      # Forwards the local 'rootless' Docker socket to the container.
+      - /run/user/1000/docker.sock:/var/run/docker.sock
+      # Update this to wherever you want VS Code to mount the folder of your project
+      - ../../..:/workspaces:cached
+    shm_size: '10g'
+    ports:
+      - "8265:8265"
+    # Overrides default command so things don't shut down after the process ends.
+    restart: always
+    stdin_open: true
+    tty: true
+    privileged: true
+    # Needed for Fedora
+    security_opt:
+      - label=disable
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+              count: all
+    # Uncomment the next four lines if you will use a ptrace-based debuggers like C++, Go, and Rust.
+    # cap_add:
+    #  - SYS_PTRACE
+    # security_opt:
+    #   - seccomp:unconfined
+
+    # Use "forwardPorts" in **devcontainer.json** to forward an app port locally. 
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
